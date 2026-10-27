@@ -8,6 +8,7 @@ function App() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [newUser, setNewUser] = useState('');
+  const [newUserEmail, setNewUserEmail] = useState('');
 
   // Fetch all users on component mount
   useEffect(() => {
@@ -20,10 +21,11 @@ function App() {
 
   const handleCreateUser = (e) => {
     e.preventDefault();
-    axios.post(API_URL, { name: newUser })
+    axios.post(API_URL, { name: newUser, email: newUserEmail })
       .then(response => {
         setUsers([...users, response.data]);
         setNewUser('');
+        setNewUserEmail('');
       });
   };
 
@@ -54,7 +56,16 @@ function App() {
           type="text"
           value={newUser}
           onChange={(e) => setNewUser(e.target.value)}
-          placeholder="Enter new user name"
+          placeholder="Enter user name"
+          aria-label="New user name"
+          required
+        />
+        <input
+          type="email"
+          value={newUserEmail}
+          onChange={(e) => setNewUserEmail(e.target.value)}
+          placeholder="Enter email address"
+          aria-label="New user email"
           required
         />
         <button type="submit">Add User</button>
@@ -70,7 +81,15 @@ function App() {
                 <input
                   type="text"
                   value={editingUser.name}
+                  aria-label={`Edit ${user.name} name`}
                   onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                />
+                <input
+                  type="email"
+                  value={editingUser.email || ''}
+                  aria-label={`Edit ${user.name} email`}
+                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  required
                 />
                 <button onClick={() => handleUpdateUser(user.id)}>Save</button>
                 <button onClick={() => setEditingUser(null)}>Cancel</button>
@@ -78,7 +97,10 @@ function App() {
             ) : (
               // View Mode
               <div>
-                <span>{user.name}</span>
+                <div className="user-details">
+                  <span>{user.name}</span>
+                  {user.email && <span className="user-email">{user.email}</span>}
+                </div>
                 <button onClick={() => setEditingUser({ ...user })}>Edit</button>
                 <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
               </div>

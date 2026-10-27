@@ -18,14 +18,22 @@ h1 {
 
 form {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="email"] {
+  min-width: 0;
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+form input {
+  flex-basis: 180px;
 }
 
 button {
@@ -53,6 +61,24 @@ li {
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #eee;
+}
+
+li > div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.user-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-email {
+  color: #666;
+  font-size: 0.9em;
 }
 
 li div button {

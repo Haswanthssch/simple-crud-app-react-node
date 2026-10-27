@@ -9,8 +9,8 @@ app.use(express.json()); // Allows parsing of JSON in request body
 
 // In-memory data store (no database needed for this simple example)
 let users = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
+  { id: 1, name: 'Alice', email: 'alice@example.com' },
+  { id: 2, name: 'Bob', email: 'bob@example.com' },
 ];
 let currentId = 2;
 
@@ -23,12 +23,12 @@ app.get('/api/users', (req, res) => {
 
 // CREATE (Add a new user)
 app.post('/api/users', (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: 'Name is required' });
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
   }
   currentId += 1;
-  const newUser = { id: currentId, name };
+  const newUser = { id: currentId, name, email };
   users.push(newUser);
   res.status(201).json(newUser);
 });
@@ -36,14 +36,15 @@ app.post('/api/users', (req, res) => {
 // UPDATE (Edit an existing user)
 app.put('/api/users/:id', (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, email } = req.body;
   const user = users.find(u => u.id === parseInt(id));
 
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  user.name = name;
+  if (name) user.name = name;
+  if (email) user.email = email;
   res.json(user);
 });
 
