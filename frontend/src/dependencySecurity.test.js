@@ -49,6 +49,14 @@ describe('dependency security fixes', () => {
     expect(packages[entry]).toBeDefined();
     expect(packages[entry].version).toBe(version);
   };
+  const allAtLeast = (packages, suffix, version) => {
+    const matches = Object.keys(packages).filter((k) => k.endsWith(suffix));
+    expect(matches.length).toBeGreaterThan(0);
+    for (const k of matches) {
+      expect(packages[k]).toBeDefined();
+      expect(gte(packages[k].version, version)).toBe(true);
+    }
+  };
 
   test('frontend vulnerable transitive dependencies are pinned to fixed versions', () => {
     atLeast(frontend, 'node_modules/jsonpath', '1.3.0');
@@ -74,5 +82,24 @@ describe('dependency security fixes', () => {
   test('backend vulnerable transitive dependencies are pinned to fixed versions', () => {
     atLeast(backend, 'node_modules/proxy-addr', '2.0.8');
     atLeast(backend, 'node_modules/body-parser', '2.4.0');
+  });
+
+  test('new CVE pins are applied to frontend lockfile', () => {
+    atLeast(frontend, 'node_modules/nanoid', '3.3.12');
+    atLeast(frontend, 'node_modules/node-forge', '1.4.0');
+    atLeast(frontend, 'node_modules/picomatch', '4.0.4');
+    atLeast(frontend, 'node_modules/postcss', '8.5.18');
+    atLeast(frontend, 'node_modules/rollup', '2.80.0');
+    atLeast(frontend, 'node_modules/shell-quote', '1.9.0');
+    atLeast(frontend, 'node_modules/source-map-js', '1.2.2');
+    atLeast(frontend, 'node_modules/uuid', '11.1.1');
+    atLeast(frontend, 'node_modules/ws', '7.5.11');
+    atLeast(frontend, 'node_modules/webpack-dev-server/node_modules/ws', '8.21.0');
+    allAtLeast(frontend, '/nth-check', '2.0.1');
+    allAtLeast(frontend, '/serialize-javascript', '7.0.3');
+  });
+
+  test('new CVE pins are applied to backend lockfile', () => {
+    atLeast(backend, 'node_modules/path-to-regexp', '8.4.0');
   });
 });
